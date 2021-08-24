@@ -8,7 +8,12 @@ export default new Vuex.Store({
   state: {
     loginStatus: false
   },
-  getters: {},
+  getters: {
+    isLogin (state) {
+      state.loginStatus = true
+      return state.loginStatus
+    }
+  },
   mutations: {},
   actions: {}
 })

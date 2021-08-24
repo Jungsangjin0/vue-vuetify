@@ -44,12 +44,7 @@
       <!--상당 바 끝 -->
 
       <v-main>
-        <router-view></router-view>
-        <v-container
-          class="fill-height"
-          fluid
-        >
-        </v-container>
+          <router-view></router-view>
       </v-main>
     </v-app>
 </div>

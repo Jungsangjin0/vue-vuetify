@@ -4,13 +4,24 @@
 <v-row class="pl-12">
       <!-- 한칸 띄우기-->
       <v-spacer/>
+      <!-- // -->
+        <!-- 검색 select -->
+        <v-col md="2">
+        <v-select
+          :items="items"
+          label="검색 종류"
+          class="mt-2 mr-4"
+          v-model="keyword"
+        ></v-select>
+        </v-col>
+        <!-- /검색 select-->
       <!-- 검색 필드 -->
       <v-col cols="3" sm="3" md="3" class="mt-2">
             <v-text-field
               label="검색"
               outlined
               dense
-              v-model="keyword"
+              v-model="word"
             ></v-text-field>
       </v-col>
       <!-- /검색 필드-->
@@ -48,21 +59,30 @@
         <!-- /menu-->
       </v-col>
       <!-- 버튼 -->
-      <v-btn @click="deleteDate()" class="mt-5" icon  color="rgb(33,33,33)">
+      <v-row>
+        <!-- 검색 취소 -->
+      <v-btn @click="deleteDate()" class="mt-9 ml-10" icon  color="rgb(33,33,33)">
         <v-icon>mdi-close-circle-outline</v-icon>
       </v-btn>
-      <v-btn @click="testt()" class="ml-5 mt-5" icon color="rgb(33,33,33)">
+      <!-- 리로드 : 전체 검색으로 -->
+      <v-btn @click="deleteDate()" class="mt-9 ml-3" icon  color="rgb(33,33,33)">
+        <v-icon>mdi-restore</v-icon>
+      </v-btn>
+      <!-- 검색하기 -->
+      <v-btn @click="testt()" class="ml-4 mt-9" icon color="rgb(33,33,33)">
         <v-icon>mdi-magnify</v-icon>
       </v-btn>
       <!-- 버튼-->
       <!-- 한칸 띄우기 -->
       <v-spacer/>
+      </v-row>
 </v-row>
     <template>
-      <v-simple-table fixed-header height="800px">
+      <v-simple-table fixed-header height="700px">
         <template v-slot:default>
           <thead>
             <tr style="border-bottom:1px solid black'">
+              <th class="text-center">번호</th>
               <th class="text-center text-h5">제목</th>
               <th class="text-right text-h5">작성자</th>
               <th class="text-center text-h5">작성 일</th>
@@ -75,6 +95,7 @@
               @click="test(index)"
               index="index"
             >
+              <td>{{ index + 1 }}</td>
               <td class="text-center">{{ item.name }}</td>
               <td class="text-right">{{ item.test1 }}</td>
               <td class="text-center">{{ item.test2 }}</td>
@@ -94,6 +115,8 @@ export default {
       menu: false,
       modal: false,
       menu2: false,
+      word: null,
+      items: ['작성자', '제목', '내용', '제목 + 내용'],
       keyword: null,
       desserts: [
         {
@@ -275,6 +298,42 @@ export default {
           calories: 518,
           test1: '작성자',
           test2: 2
+        },
+        {
+          name: 'Gingerbread',
+          calories: 356,
+          test1: 1,
+          test2: 2
+        },
+        {
+          name: 'Jelly bean',
+          calories: 375,
+          test1: '작성자',
+          test2: 2
+        },
+        {
+          name: 'Lollipop',
+          calories: 392,
+          test1: '작성자',
+          test2: 2
+        },
+        {
+          name: 'Honeycomb',
+          calories: 408,
+          test1: '작성자',
+          test2: 2
+        },
+        {
+          name: 'Donut',
+          calories: 452,
+          test1: '작성자',
+          test2: 2
+        },
+        {
+          name: 'KitKat',
+          calories: 518,
+          test1: '작성자',
+          test2: 2
         }
       ]
     }
@@ -287,12 +346,14 @@ export default {
   methods: {
     test (index) {
       alert(index)
+      this.$router.push({name: 'detail', params: { postsId: index }})
     },
     testt () {
-      alert(`${this.date} // ${this.keyword}`)
+      alert(`${this.keyword} // ${this.word} // ${this.date}`)
     },
     deleteDate () {
       this.date = []
+      this.word = null
       this.keyword = null
     }
   }
