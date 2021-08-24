@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import HelloWorld from '@/components/HelloWorld'
-import Board from '@/views/Board.vue'
+import Posts from '@/views/Posts.vue'
 import store from '@/store/store.js'
 
 Vue.use(Router)
@@ -15,9 +15,9 @@ export default new Router({
       component: HelloWorld
     },
     {
-      path: '/board',
-      name: 'board',
-      component: Board,
+      path: '/posts',
+      name: 'posts',
+      component: Posts,
       beforeEnter: (to, from, next) => {
         const isLogin = store.state.loginStatus
         if (!isLogin) {
@@ -34,9 +34,14 @@ export default new Router({
       component: () => import('../views/Login.vue')
     },
     {
-      path: '/detail/:postsId',
+      path: '/posts/:postsId',
       name: 'detail',
       component: () => import('../views/Detail.vue')
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: () => import('@/components/FileList.vue')
     }
   ]
 })

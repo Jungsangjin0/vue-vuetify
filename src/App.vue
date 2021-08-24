@@ -18,7 +18,7 @@
               <v-list-item-title class="pr-10">Home</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-item link :to="{name: 'board'}">
+          <v-list-item link :to="{name: 'posts'}">
             <v-list-item-action>
                 <font-awesome-icon icon="clipboard-list"/>
             </v-list-item-action>
