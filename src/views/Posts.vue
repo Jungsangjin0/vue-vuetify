@@ -61,20 +61,29 @@
       <!-- 버튼 -->
       <v-row>
         <!-- 검색 취소 -->
-      <v-btn @click="deleteWords()" class="mt-9 ml-10" icon  color="rgb(33,33,33)">
-        <v-icon>mdi-close-circle-outline</v-icon>
-      </v-btn>
-      <!-- 리로드 : 전체 검색으로 -->
-      <v-btn @click="reloadSearch()" class="mt-9 ml-3" icon  color="rgb(33,33,33)">
-        <v-icon>mdi-restore</v-icon>
-      </v-btn>
-      <!-- 검색하기 -->
-      <v-btn @click="searchKeyword()" class="ml-4 mt-9" icon color="rgb(33,33,33)">
-        <v-icon>mdi-magnify</v-icon>
-      </v-btn>
-      <!-- 버튼-->
-      <!-- 한칸 띄우기 -->
-      <v-spacer/>
+        <v-btn @click="deleteWords()" class="mt-9 ml-10" icon  color="rgb(33,33,33)">
+          <v-icon>mdi-close-circle-outline</v-icon>
+        </v-btn>
+        <!-- 리로드 : 전체 검색으로 -->
+        <v-btn @click="reloadSearch()" class="mt-9 ml-3" icon  color="rgb(33,33,33)">
+          <v-icon>mdi-restore</v-icon>
+        </v-btn>
+        <!-- 검색하기 -->
+        <v-btn @click="searchKeyword()" class="ml-4 mt-9" icon color="rgb(33,33,33)">
+          <v-icon>mdi-magnify</v-icon>
+        </v-btn>
+        <!-- 버튼-->
+        <!-- 한칸 띄우기 -->
+      </v-row>
+      <v-row class="justify-left pt-2">
+           <v-btn
+              fab
+              grey
+              small
+              @click="write()"
+            >
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
       </v-row>
 </v-row>
     <template>
@@ -95,7 +104,8 @@
               @click="postDetail(item.postsId)"
               index="index"
             >
-              <td>{{ index + 1 }}</td>
+              <!-- <td>{{ index + 1 }}</td> -->
+              <td>{{ item.postsId }}</td>
               <td class="text-center">{{ item.title }}</td>
               <td class="text-right">{{ item.regName }}</td>
               <td class="text-center">{{ item.modifyDate }}</td>
@@ -109,6 +119,7 @@
 
 <script>
 import axios from 'axios'
+import router from '@/router/index.js'
 
 const DEV_URL = 'http://localhost:9090/rest/api/v1'
 
@@ -177,6 +188,10 @@ export default {
     reloadSearch () {
       axios.get(DEV_URL + '/posts').then((res) => { this.list = res.data })
       this.deleteWords()
+    },
+    /* 검색 폼 이동 */
+    write () {
+      router.push({name: 'write'})
     }
   }
 }

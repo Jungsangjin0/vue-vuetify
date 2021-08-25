@@ -42,6 +42,15 @@ export default new Router({
       path: '/test',
       name: 'test',
       component: () => import('@/components/FileList.vue')
+    },
+    {
+      path: '/write',
+      name: 'write',
+      component: () => import('@/views/Write.vue')
+    },
+    {
+      path: '*',
+      redirect: '/'
     }
   ]
 })

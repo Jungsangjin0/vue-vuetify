@@ -31,15 +31,18 @@
       <v-row class="justify-center">
         <v-card style="width: 82%">
           <v-col>
-            <FileListComponent :fileStatus="fileStatus" :fileList="fileList"/>
+            <FileListComponent
+            :fileStatus="fileStatus"
+            :fileList="fileList"
+            @testt="testt"
+            />
           </v-col>
         </v-card>
       </v-row>
-      <!-- file upload frame -->
-      <v-row class="justify-center">
-        <v-col md="10">
+      <!-- fileupload frame -->
+      <v-row class="justify-center" v-if="fileStatus">
+        <v-col md="8">
             <v-file-input
-          v-if="fileStatus"
           outlined
           show-size
           label="파일 업로드"
@@ -48,9 +51,14 @@
           multiple
           truncate-length="24"
           v-on:change="uploadFiles"
-          v-model="test"
+          v-model="addFileList"
         ></v-file-input>
         </v-col>
+        <!-- 파일 추가-->
+        <v-col md="2">
+            <v-btn @click="addFiles">추가하기</v-btn>
+        </v-col>
+        <!-- / 파일 추가-->
       </v-row>
       <!-- /fileuplaod frame -->
       <v-row>
@@ -87,6 +95,7 @@ export default {
       fileList: null,
       files: [],
       test: null,
+      addFileList: null,
       rules: [
         (value) => !!value || '제목을 입력해 주세요',
         (value) => (value && value.length >= 1) || '제목을 입력해 주세요'
@@ -102,22 +111,23 @@ export default {
   created () {
     /* 처음 페이지 들어왔을 때 axios를 통해 데이터 가져오기 */
     axios.get(DEV_URL + '/' + this.$route.params.postsId).then((res) => {
-      this.post = res.data
-      this.titleText = this.post.title
-      this.contentText = this.post.content
-      this.fileList = this.post.files
-    })
-    /**/
-    /* 해당 게시물이 없을 경우 삭제 처리 */
-    // alert('해당 게시물은 삭제 되었습니다.')
-    // router.push({name: 'board'})
+      if (res.data != null && res.data !== '' && res.headers['content-length'] !== 0) {
+        this.post = res.data
+        this.titleText = this.post.title
+        this.contentText = this.post.content
+        this.fileList = this.post.files
+      } else if (res.data == null || res.data === '' || res.headers['content-length'] === 0) {
+        /* 해당 게시물이 없을 경우 삭제 처리 */
+        alert('해당 게시물은 삭제 되었습니다.')
+        router.replace({name: 'posts'})
+      }
+    }).catch((err) => { console.log(err) })
   },
   methods: {
     /* 전체 리스트로 돌아가는 메소드 */
     goList () {
       if (this.readStatus) {
-        let check = window.confirm('작성한 내용이 사라집니다 목록으로 가시겠습니까?')
-        if (check) {
+        if (window.confirm('수정중인 데이터가 날아갑니다. 떠나시겠습니까?')) {
           this.$router.replace({name: 'posts'})
         }
       } else {
@@ -140,11 +150,9 @@ export default {
     },
     /* 삭제 메소드 */
     deletePost () {
-      // delete
-      let check = window.confirm('삭제 하시겠습니까?')
       /* 삭제 axios */
-      if (check) {
-        axios.delete('DEV_URL' + '/' + this.$route.params.postsId).then((res) => {
+      if (window.confirm('삭제 하시겠습니까?')) {
+        axios.delete(DEV_URL + '/' + this.$route.params.postsId).then((res) => {
           if (res.status === 200) {
             alert('삭제되었습니다.')
             router.replace({name: 'posts'})
@@ -158,8 +166,20 @@ export default {
       window.alert('취소 메소드')
       router.go(router.currentRoute) // reload
     },
-    uploadFiles () {
-
+    testt (payload) {
+      this.fileList = payload
+    },
+    /* 파일 추가 */
+    addFiles () {
+      if (this.addFileList && this.addFileList && this.addFileList[0]) {
+        const formData = new FormData()
+        for (let i = 0; i < this.addFileList.length; i++) {
+          formData.append('files', this.addFileList[i])
+        }
+        axios.post(DEV_URL + '/' + this.$route.params.postsId + '/files', formData, {
+          headers: {'Content-Type': 'multipart/form-data'}
+        }).then((res) => { console.log(res); alert('success') })
+      }
     }
   }
 }
