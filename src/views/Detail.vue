@@ -60,16 +60,16 @@
       <!-- fileupload frame -->
       <v-row class="justify-center" v-if="fileStatus">
         <v-col md="8">
-            <v-file-input
-          outlined
-          show-size
-          label="파일 업로드"
-          counter
-          chips
-          multiple
-          truncate-length="24"
-          v-model="addFileList"
-        ></v-file-input>
+          <v-file-input
+            outlined
+            show-size
+            label="파일 업로드"
+            counter
+            chips
+            multiple
+            truncate-length="24"
+            v-model="addFileList"
+          ></v-file-input>
         </v-col>
         <!-- 파일 추가-->
         <v-col md="2">
@@ -133,9 +133,14 @@
           </span>
         </v-col>
         <v-col md="8">
-          {{ item.content }}
-        <v-textarea>
+          <span v-if="!checkTest"> {{ item.content }}</span>
+
+        <v-textarea v-if="checkTest"
+        value="textarea">
         </v-textarea>
+        </v-col>
+        <v-col>
+          <v-btn @click="testa(item.commId)"> 클릭 </v-btn>
         </v-col>
       </v-row>
       <!-- /댓글 반복-->
@@ -173,7 +178,8 @@ export default {
         title: null,
         content: null
       },
-      comment: null
+      comment: null,
+      checkTest: false
     }
   },
   created () {
@@ -194,6 +200,10 @@ export default {
     }).catch((err) => { console.log(err) })
   },
   methods: {
+    testa (commId) {
+      this.checkTest === false ? this.checkTest = true : this.checkTest = false
+      alert(commId)
+    },
     /* 전체 리스트로 돌아가는 메소드 */
     goList () {
       if (this.readStatus) {
@@ -287,10 +297,13 @@ export default {
       this.comment = inputText
     },
     /* 댓글 추가 */
-    editComment () {
-      axios.post(`${DEV_URL}/${this.$route.params.postsId}/comm`, {content: this.comment}).then((res) => {
-        console.log(res)
-      })
+    async editComment () {
+      let response = await axios.post(`${DEV_URL}/${this.$route.params.postsId}/comm`, {content: this.comment})
+      if (response) {
+        await axios.get(`${DEV_URL}/${this.$route.params.postsId}/comm`).then((res) => {
+          this.post.comments = res.data
+        })
+      }
     }
     // getDatas () {
     //   axios.get(DEV_URL + '/' + this.$route.params.postsId).then((res) => {
