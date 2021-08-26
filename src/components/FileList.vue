@@ -24,7 +24,10 @@ export default {
   props: ['fileStatus', 'fileList'],
   data () {
     return {
-
+      requestUrls: {
+        posts: `http://localhost:9090/rest/api/v1/posts/{postId}/files/{fileId}`,
+        files: `http://localhost:9090/rest/api/v1/files/{id}`
+      }
     }
   },
   methods: {
@@ -41,7 +44,8 @@ export default {
       // }
 
       /* 다운로드 요청 */
-      axios.get(DEV_URL + '/files/' + item.fileId, {
+      // axios.get(DEV_URL + '/files/' + item.fileId, {
+      axios.get(this.requestUrls.files.replace('{id}', item.fileId), {
         responseType: 'blob'
       }).then((res) => {
         const url = window.URL.createObjectURL(new Blob([res.data], {type: item.contentType}))
@@ -59,14 +63,12 @@ export default {
     },
     /* 파일 삭제 메소드 */
     deleteFile (fileId, postId) {
-      alert('deleteFile')
-      axios.delete(DEV_URL + '/posts/' + postId + '/files/' + fileId).then(
-        (res) => {
-          for (const index in this.fileList) {
-            if (this.fileList[index].fileId === fileId) { delete this.fileList[index] }
-          }
-        })
-      this.$emit('testt', this.fileList)
+      if (!confirm('삭제하시겠습니까?')) return
+      axios.delete(`${DEV_URL}/posts/${postId}/files/${fileId}`).then((res) => {
+        if (res.status === 200) {
+          this.$emit('search-file')
+        }
+      })
     }
   }
 }

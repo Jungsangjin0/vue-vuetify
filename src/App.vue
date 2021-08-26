@@ -38,8 +38,8 @@
         <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
         <v-spacer/>
 
-        <v-toobar-title v-if="loginStatus" class="text-h5">{{ this.loginStatus }}</v-toobar-title>
-        <v-toobar-title v-else class="text-h5" :to="{path: '/'}"><router-link  :to="{name: 'login'}" tag="span">로그인</router-link></v-toobar-title>
+        <v-toobar-title  v-if="loginStatus" class="text-h5">{{ this.loginStatus }}</v-toobar-title>
+        <v-toobar-title  v-else class="text-h5" :to="{path: '/'}"><router-link  :to="{name: 'login'}" tag="span">로그인</router-link></v-toobar-title>
       </v-app-bar>
       <!--상당 바 끝 -->
 

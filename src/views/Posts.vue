@@ -51,7 +51,7 @@
           <!-- date picker-->
           <v-date-picker no-title scrollable v-model="date" range>
             <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+            <v-btn text color="primary" @click="cancelDate()">Cancel</v-btn>
             <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
           </v-date-picker>
           <!-- date picker-->
@@ -99,14 +99,13 @@
           </thead>
           <tbody>
             <tr
-              v-for="(item, index) in list"
+              v-for="(item) in list"
               :key="item.postsId"
               @click="postDetail(item.postsId)"
-              index="index"
             >
               <!-- <td>{{ index + 1 }}</td> -->
               <td>{{ item.postsId }}</td>
-              <td class="text-center">{{ item.title }}</td>
+              <td class="text-center">{{ item.title }} {{item.comments.length != 0? `[${item.comments.length}]` : null}}</td>
               <td class="text-right">{{ item.regName }}</td>
               <td class="text-center">{{ item.modifyDate }}</td>
             </tr>
@@ -134,8 +133,8 @@ export default {
       search: {
         word: null,
         keyword: null,
-        startDate: null,
-        endDate: null
+        startDate: '',
+        endDate: ''
       },
       keyword: null,
       list: []
@@ -144,6 +143,7 @@ export default {
   created () {
     axios.get(DEV_URL + '/posts').then((res) => {
       this.list = res.data
+      console.log(this.list)
     })
   },
   computed: {
@@ -153,6 +153,12 @@ export default {
     }
   },
   methods: {
+    /** 날짜 선택 취소 */
+    cancelDate () {
+      this.date = []
+      this.menu = false
+      this.$refs.menu.save(this.date)
+    },
     /** 상세 페이지 */
     postDetail (index) {
       this.$router.push({name: 'detail', params: { postsId: index }})
@@ -160,13 +166,14 @@ export default {
     /** 검색  */
     searchKeyword () {
       this.formattingWords()
-      axios.get(DEV_URL + '/posts?keyword=' + this.search.keyword + '&word=' + this.search.word + '&startDate=' + this.search.startDate + '&endDate=' + this.search.endDate).then(
+      axios.get(`${DEV_URL}/posts?keyword=${this.search.keyword}&word=${this.search.word}&startDate=${this.search.startDate}&endDate=${this.search.endDate}`).then(
+
         (res) => { this.list = res.data })
     },
     /* search formatting */
     formattingWords () {
-      this.search.startDate = this.date[0]
-      this.search.endDate = this.date[1]
+      this.date[0] === undefined ? this.search.startDate = '' : this.search.startDate = this.date[0]
+      this.date[1] === undefined ? this.search.endDate = '' : this.search.endDate = this.date[1]
       switch (this.keyword) {
         case '제목': this.search.keyword = 'title'
           break
@@ -186,7 +193,7 @@ export default {
     },
     /* 검색 리로드 */
     reloadSearch () {
-      axios.get(DEV_URL + '/posts').then((res) => { this.list = res.data })
+      axios.get(`${DEV_URL}/posts`).then((res) => { this.list = res.data })
       this.deleteWords()
     },
     /* 검색 폼 이동 */

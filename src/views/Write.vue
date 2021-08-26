@@ -101,7 +101,8 @@ export default {
       /** 데이터 formData로 formattig */
       const formData = new FormData()
       formData.append('title', this.title)
-      formData.append('content', this.content)
+
+      this.content == null ? formData.append('content', '') : formData.append('content', this.content)
       if (this.files && this.files[0]) {
         for (let i = 0; i < this.files.length; i++) {
           formData.append('file', this.files[i])
