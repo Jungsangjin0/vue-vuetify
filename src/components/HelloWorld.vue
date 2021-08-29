@@ -1,6 +1,6 @@
 <template>
   <v-app class="hello">
-    <v-title class="display-1">Hello World! Main</v-title>
+    <h2>Main</h2>
   </v-app>
 </template>
 
